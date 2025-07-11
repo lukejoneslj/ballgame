@@ -9,10 +9,15 @@ class FirebaseService {
     // Initialize Firebase - you'll need to add your config
     async init() {
         try {
-            // Replace with your Firebase config from the console
+            // Your Firebase config from the console
             const firebaseConfig = {
-                // Add your config here
-                databaseURL: "https://your-project-default-rtdb.firebaseio.com/"
+                apiKey: "AIzaSyA4sdYI0nCEhpz5QVw-48DuvHN08qBUgiI",
+                authDomain: "balls-e47df.firebaseapp.com",
+                databaseURL: "https://balls-e47df-default-rtdb.firebaseio.com",
+                projectId: "balls-e47df",
+                storageBucket: "balls-e47df.firebasestorage.app",
+                messagingSenderId: "1081417873406",
+                appId: "1:1081417873406:web:7ed2372f9ac84d6634f2af"
             };
 
             // Initialize Firebase
