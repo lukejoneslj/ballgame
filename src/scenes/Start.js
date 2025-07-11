@@ -16,19 +16,19 @@ export class Start extends Phaser.Scene {
 
         this.cameras.main.setBackgroundColor(0x1a1a2e);
 
-        this.add.image(512, 384, 'background').setAlpha(0.2);
+        this.add.image(1024, 768, 'background').setAlpha(0.2);
 
         // Main title - more prominent
-        this.add.text(512, 80, 'BALL BOUNCE', {
-            fontFamily: 'Arial Black', fontSize: 68, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 12,
+        this.add.text(1024, 160, 'I LOVE BALLS', {
+            fontFamily: 'Arial Black', fontSize: 136, color: '#ffffff',
+            stroke: '#000000', strokeThickness: 24,
             align: 'center'
         }).setOrigin(0.5);
 
         // Subtitle - better styling
-        this.add.text(512, 140, 'ULTIMATE EDITION', {
-            fontFamily: 'Arial Black', fontSize: 22, color: '#00d4ff',
-            stroke: '#000000', strokeThickness: 4,
+        this.add.text(1024, 280, 'ULTIMATE EDITION', {
+            fontFamily: 'Arial Black', fontSize: 44, color: '#00d4ff',
+            stroke: '#000000', strokeThickness: 8,
             align: 'center'
         }).setOrigin(0.5);
 
@@ -36,77 +36,77 @@ export class Start extends Phaser.Scene {
         this.createAllTimeHighScoreDisplay();
 
         // Welcome message with username
-        this.add.text(512, 200, `Welcome back, ${gameDataManager.getCurrentUsername()}!`, {
-            fontFamily: 'Arial Black', fontSize: 16, color: '#f1c40f',
-            stroke: '#000000', strokeThickness: 3,
+        this.add.text(1024, 400, `Welcome back, ${gameDataManager.getCurrentUsername()}!`, {
+            fontFamily: 'Arial Black', fontSize: 32, color: '#f1c40f',
+            stroke: '#000000', strokeThickness: 6,
             align: 'center'
         }).setOrigin(0.5);
 
         // Stats container background - moved down slightly
-        const statsContainer = this.add.rectangle(512, 250, 400, 120, 0x2c3e50);
-        statsContainer.setStrokeStyle(3, 0x34495e);
+        const statsContainer = this.add.rectangle(1024, 500, 800, 240, 0x2c3e50);
+        statsContainer.setStrokeStyle(6, 0x34495e);
         statsContainer.setAlpha(0.9);
 
         // Player stats display - organized in columns - moved down
-        this.leftStats = this.add.text(412, 230, 
+        this.leftStats = this.add.text(824, 460, 
             `Money: $${gameDataManager.getDollars()}\nBest Score: ${gameDataManager.getBestScore()}`, {
-            fontFamily: 'Arial Black', fontSize: 16, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 3,
+            fontFamily: 'Arial Black', fontSize: 32, color: '#ffffff',
+            stroke: '#000000', strokeThickness: 6,
             align: 'left',
-            lineSpacing: 8
+            lineSpacing: 16
         }).setOrigin(0.5);
 
-        this.rightStats = this.add.text(612, 230, 
+        this.rightStats = this.add.text(1224, 460, 
             `Total Hits: ${gameDataManager.getTotalHits()}\nBalls Unlocked: ${gameDataManager.getUnlockedBalls().length}/14`, {
-            fontFamily: 'Arial Black', fontSize: 16, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 3,
+            fontFamily: 'Arial Black', fontSize: 32, color: '#ffffff',
+            stroke: '#000000', strokeThickness: 6,
             align: 'left',
-            lineSpacing: 8
+            lineSpacing: 16
         }).setOrigin(0.5);
 
         // Current ball section - moved down
         const currentBall = gameDataManager.getCurrentBall();
         
         // Ball preview - positioned to the left outside the box
-        const ballPreview = this.add.image(300, 390, 'ball');
-        ballPreview.setScale(currentBall.scale * 2.2);
+        const ballPreview = this.add.image(600, 780, 'ball');
+        ballPreview.setScale(currentBall.scale * 4.4);
         ballPreview.setTint(currentBall.color);
         
         // Current ball container - centered for the text content
-        const ballContainer = this.add.rectangle(512, 390, 350, 120, 0x34495e);
-        ballContainer.setStrokeStyle(3, 0x2c3e50);
+        const ballContainer = this.add.rectangle(1024, 780, 700, 240, 0x34495e);
+        ballContainer.setStrokeStyle(6, 0x2c3e50);
         ballContainer.setAlpha(0.9);
 
-        this.add.text(512, 340, 'CURRENT BALL', {
-            fontFamily: 'Arial Black', fontSize: 18, color: '#ecf0f1',
-            stroke: '#000000', strokeThickness: 4,
+        this.add.text(1024, 680, 'CURRENT BALL', {
+            fontFamily: 'Arial Black', fontSize: 36, color: '#ecf0f1',
+            stroke: '#000000', strokeThickness: 8,
             align: 'center'
         }).setOrigin(0.5);
 
         // Ball name and info - centered in the container
-        this.add.text(512, 375, currentBall.name, {
-            fontFamily: 'Arial Black', fontSize: 20, color: '#f1c40f',
-            stroke: '#000000', strokeThickness: 4,
+        this.add.text(1024, 750, currentBall.name, {
+            fontFamily: 'Arial Black', fontSize: 40, color: '#f1c40f',
+            stroke: '#000000', strokeThickness: 8,
             align: 'center'
         }).setOrigin(0.5);
 
-        this.add.text(512, 405, 
+        this.add.text(1024, 810, 
             `Scale: ${currentBall.scale} • Bounce: ${currentBall.bounce}\nJump: ${currentBall.jumpPower}`, {
-            fontFamily: 'Arial Black', fontSize: 14, color: '#bdc3c7',
-            stroke: '#000000', strokeThickness: 2,
+            fontFamily: 'Arial Black', fontSize: 28, color: '#bdc3c7',
+            stroke: '#000000', strokeThickness: 4,
             align: 'center',
-            lineSpacing: 4
+            lineSpacing: 8
         }).setOrigin(0.5);
 
         // Buttons section
         this.createStyledButtons();
 
         // Instructions - cleaner and more subtle
-        this.add.text(512, 700, 'Hit the ball to earn money and unlock amazing new balls with special abilities!', {
-            fontFamily: 'Arial Black', fontSize: 14, color: '#7f8c8d',
-            stroke: '#000000', strokeThickness: 2,
+        this.add.text(1024, 1400, 'Hit the ball to earn money and unlock amazing new balls with special abilities!', {
+            fontFamily: 'Arial Black', fontSize: 28, color: '#7f8c8d',
+            stroke: '#000000', strokeThickness: 4,
             align: 'center',
-            wordWrap: { width: 700, useAdvancedWrap: true }
+            wordWrap: { width: 1400, useAdvancedWrap: true }
         }).setOrigin(0.5);
 
         // Add subtle floating particles instead of balls
@@ -123,26 +123,26 @@ export class Start extends Phaser.Scene {
 
     async createAllTimeHighScoreDisplay() {
         // Create container for all-time high score
-        const highScoreContainer = this.add.rectangle(512, 170, 500, 50, 0x8e44ad);
-        highScoreContainer.setStrokeStyle(3, 0x9b59b6);
+        const highScoreContainer = this.add.rectangle(1024, 340, 1000, 100, 0x8e44ad);
+        highScoreContainer.setStrokeStyle(6, 0x9b59b6);
         highScoreContainer.setAlpha(0.9);
 
         // Add crown icon effect
-        const crown = this.add.text(400, 170, '👑', {
-            fontSize: 20,
+        const crown = this.add.text(800, 340, '👑', {
+            fontSize: 40,
             align: 'center'
         }).setOrigin(0.5);
 
         // All-time high score text (placeholder)
-        this.allTimeHighScoreText = this.add.text(512, 170, 'Loading global record...', {
-            fontFamily: 'Arial Black', fontSize: 16, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 3,
+        this.allTimeHighScoreText = this.add.text(1024, 340, 'Loading global record...', {
+            fontFamily: 'Arial Black', fontSize: 32, color: '#ffffff',
+            stroke: '#000000', strokeThickness: 6,
             align: 'center'
         }).setOrigin(0.5);
 
         // Add sparkle effect
-        const sparkle = this.add.text(624, 170, '✨', {
-            fontSize: 20,
+        const sparkle = this.add.text(1248, 340, '✨', {
+            fontSize: 40,
             align: 'center'
         }).setOrigin(0.5);
 
@@ -193,12 +193,12 @@ export class Start extends Phaser.Scene {
 
     createStyledButtons() {
         // Start button with better styling
-        this.startButton = this.add.rectangle(512, 480, 280, 55, 0x27ae60);
-        this.startButton.setStrokeStyle(4, 0x229954);
+        this.startButton = this.add.rectangle(1024, 960, 560, 110, 0x27ae60);
+        this.startButton.setStrokeStyle(8, 0x229954);
         this.startButton.setInteractive();
         
         // Add glow effect
-        const startGlow = this.add.rectangle(512, 480, 280, 55, 0x2ecc71);
+        const startGlow = this.add.rectangle(1024, 960, 560, 110, 0x2ecc71);
         startGlow.setAlpha(0.3);
         startGlow.setVisible(false);
         
@@ -216,19 +216,19 @@ export class Start extends Phaser.Scene {
             startGlow.setVisible(false);
         });
 
-        this.add.text(512, 480, 'START GAME', {
-            fontFamily: 'Arial Black', fontSize: 22, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 5,
+        this.add.text(1024, 960, 'START GAME', {
+            fontFamily: 'Arial Black', fontSize: 44, color: '#ffffff',
+            stroke: '#000000', strokeThickness: 10,
             align: 'center'
         }).setOrigin(0.5);
 
         // Shop button with better styling
-        this.shopButton = this.add.rectangle(512, 550, 280, 55, 0x3498db);
-        this.shopButton.setStrokeStyle(4, 0x2980b9);
+        this.shopButton = this.add.rectangle(1024, 1100, 560, 110, 0x3498db);
+        this.shopButton.setStrokeStyle(8, 0x2980b9);
         this.shopButton.setInteractive();
         
         // Add glow effect
-        const shopGlow = this.add.rectangle(512, 550, 280, 55, 0x5dade2);
+        const shopGlow = this.add.rectangle(1024, 1100, 560, 110, 0x5dade2);
         shopGlow.setAlpha(0.3);
         shopGlow.setVisible(false);
         
@@ -246,19 +246,19 @@ export class Start extends Phaser.Scene {
             shopGlow.setVisible(false);
         });
 
-        this.add.text(512, 550, 'BALL SHOP', {
-            fontFamily: 'Arial Black', fontSize: 22, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 5,
+        this.add.text(1024, 1100, 'BALL SHOP', {
+            fontFamily: 'Arial Black', fontSize: 44, color: '#ffffff',
+            stroke: '#000000', strokeThickness: 10,
             align: 'center'
         }).setOrigin(0.5);
 
         // High Scores button
-        this.highScoresButton = this.add.rectangle(512, 620, 280, 55, 0xe67e22);
-        this.highScoresButton.setStrokeStyle(4, 0xd68910);
+        this.highScoresButton = this.add.rectangle(1024, 1240, 560, 110, 0xe67e22);
+        this.highScoresButton.setStrokeStyle(8, 0xd68910);
         this.highScoresButton.setInteractive();
         
         // Add glow effect
-        const highScoresGlow = this.add.rectangle(512, 620, 280, 55, 0xf39c12);
+        const highScoresGlow = this.add.rectangle(1024, 1240, 560, 110, 0xf39c12);
         highScoresGlow.setAlpha(0.3);
         highScoresGlow.setVisible(false);
         
@@ -276,15 +276,15 @@ export class Start extends Phaser.Scene {
             highScoresGlow.setVisible(false);
         });
 
-        this.add.text(512, 620, 'HIGH SCORES', {
-            fontFamily: 'Arial Black', fontSize: 22, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 5,
+        this.add.text(1024, 1240, 'HIGH SCORES', {
+            fontFamily: 'Arial Black', fontSize: 44, color: '#ffffff',
+            stroke: '#000000', strokeThickness: 10,
             align: 'center'
         }).setOrigin(0.5);
 
         // Change Username button (smaller, in corner)
-        this.changeUsernameButton = this.add.rectangle(900, 100, 160, 40, 0x95a5a6);
-        this.changeUsernameButton.setStrokeStyle(3, 0x7f8c8d);
+        this.changeUsernameButton = this.add.rectangle(1800, 200, 320, 80, 0x95a5a6);
+        this.changeUsernameButton.setStrokeStyle(6, 0x7f8c8d);
         this.changeUsernameButton.setInteractive();
         
         this.changeUsernameButton.on('pointerdown', () => {
@@ -299,9 +299,9 @@ export class Start extends Phaser.Scene {
             this.changeUsernameButton.setScale(1);
         });
 
-        this.add.text(900, 100, 'CHANGE USER', {
-            fontFamily: 'Arial Black', fontSize: 14, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 3,
+        this.add.text(1800, 200, 'CHANGE USER', {
+            fontFamily: 'Arial Black', fontSize: 28, color: '#ffffff',
+            stroke: '#000000', strokeThickness: 6,
             align: 'center'
         }).setOrigin(0.5);
     }
@@ -309,16 +309,16 @@ export class Start extends Phaser.Scene {
     createFloatingParticles() {
         // Create subtle floating particles instead of balls
         for (let i = 0; i < 12; i++) {
-            const x = Phaser.Math.Between(50, 974);
-            const y = Phaser.Math.Between(50, 150);
+            const x = Phaser.Math.Between(100, 1948);
+            const y = Phaser.Math.Between(100, 300);
             
-            const particle = this.add.circle(x, y, 3, 0x3498db);
+            const particle = this.add.circle(x, y, 6, 0x3498db);
             particle.setAlpha(0.4);
             
             // Add floating animation
             this.tweens.add({
                 targets: particle,
-                y: y - 30,
+                y: y - 60,
                 duration: 3000 + Math.random() * 2000,
                 ease: 'Sine.easeInOut',
                 yoyo: true,
@@ -328,7 +328,7 @@ export class Start extends Phaser.Scene {
             // Add gentle horizontal drift
             this.tweens.add({
                 targets: particle,
-                x: x + (Math.random() - 0.5) * 50,
+                x: x + (Math.random() - 0.5) * 100,
                 duration: 4000 + Math.random() * 3000,
                 ease: 'Sine.easeInOut',
                 yoyo: true,

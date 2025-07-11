@@ -9,9 +9,9 @@ export class Game extends Phaser.Scene {
     constructor() {
         super('Game');
         this.score = 0;
-        this.targetRadius = 100; // Initial radius of the clickable area
-        this.minTargetRadius = 20; // Minimum radius to prevent it from getting too small
-        this.shrinkAmount = 10; // Amount to shrink by each time
+        this.targetRadius = 200; // Initial radius of the clickable area (doubled for new resolution)
+        this.minTargetRadius = 40; // Minimum radius to prevent it from getting too small (doubled)
+        this.shrinkAmount = 20; // Amount to shrink by each time (doubled)
         
         // Power-up system
         this.powerUps = [];
@@ -28,61 +28,61 @@ export class Game extends Phaser.Scene {
         this.trailLifetime = 1000; // 1 second in milliseconds
         
         // Magnetism effect for magnetic ball
-        this.magneticRange = 100;
+        this.magneticRange = 200;
     }
 
     create() {
         this.cameras.main.setBackgroundColor(0x00ff00);
 
-        this.add.image(512, 384, 'background').setAlpha(0.5);
+        this.add.image(1024, 768, 'background').setAlpha(0.5);
 
         // Create tutorial text
-        const tutorialText = this.add.text(512, 584, 'Tap inside the circle to make the ball jump!\nTarget area shrinks every 10 seconds!\nHit the ball into power-ups to collect them!\nEarn $1 per hit!', {
-            fontFamily: 'Arial Black', fontSize: 16, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 8,
+        const tutorialText = this.add.text(1024, 1168, 'Tap inside the circle to make the ball jump!\nTarget area shrinks every 10 seconds!\nHit the ball into power-ups to collect them!\nEarn $1 per hit!', {
+            fontFamily: 'Arial Black', fontSize: 32, color: '#ffffff',
+            stroke: '#000000', strokeThickness: 16,
             align: 'center'
         }).setOrigin(0.5);
 
         // Create score text
-        this.scoreText = this.add.text(512, 50, 'Score: 0', {
-            fontFamily: 'Arial Black', fontSize: 28, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 8,
+        this.scoreText = this.add.text(1024, 100, 'Score: 0', {
+            fontFamily: 'Arial Black', fontSize: 56, color: '#ffffff',
+            stroke: '#000000', strokeThickness: 16,
             align: 'center'
         }).setOrigin(0.5);
 
         // Create currency display
-        this.currencyText = this.add.text(50, 50, `$${gameDataManager.getDollars()}`, {
-            fontFamily: 'Arial Black', fontSize: 24, color: '#00ff00',
-            stroke: '#000000', strokeThickness: 6,
+        this.currencyText = this.add.text(100, 100, `$${gameDataManager.getDollars()}`, {
+            fontFamily: 'Arial Black', fontSize: 48, color: '#00ff00',
+            stroke: '#000000', strokeThickness: 12,
             align: 'left'
         }).setOrigin(0, 0.5);
 
         // Create ball info display
         const currentBall = gameDataManager.getCurrentBall();
-        this.ballInfoText = this.add.text(50, 80, `Ball: ${currentBall.name}`, {
-            fontFamily: 'Arial Black', fontSize: 18, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 4,
+        this.ballInfoText = this.add.text(100, 160, `Ball: ${currentBall.name}`, {
+            fontFamily: 'Arial Black', fontSize: 36, color: '#ffffff',
+            stroke: '#000000', strokeThickness: 8,
             align: 'left'
         }).setOrigin(0, 0.5);
 
         // Create difficulty indicator text
-        this.difficultyText = this.add.text(50, 110, 'Target Size: 100', {
-            fontFamily: 'Arial Black', fontSize: 16, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 4,
+        this.difficultyText = this.add.text(100, 220, 'Target Size: 100', {
+            fontFamily: 'Arial Black', fontSize: 32, color: '#ffffff',
+            stroke: '#000000', strokeThickness: 8,
             align: 'left'
         }).setOrigin(0, 0.5);
 
         // Create countdown text
-        this.countdownText = this.add.text(50, 140, 'Next shrink in: 10s', {
-            fontFamily: 'Arial Black', fontSize: 16, color: '#ffff00',
-            stroke: '#000000', strokeThickness: 4,
+        this.countdownText = this.add.text(100, 280, 'Next shrink in: 10s', {
+            fontFamily: 'Arial Black', fontSize: 32, color: '#ffff00',
+            stroke: '#000000', strokeThickness: 8,
             align: 'left'
         }).setOrigin(0, 0.5);
 
         // Create power-up status text
-        this.powerUpText = this.add.text(50, 170, '', {
-            fontFamily: 'Arial Black', fontSize: 14, color: '#00ff00',
-            stroke: '#000000', strokeThickness: 3,
+        this.powerUpText = this.add.text(100, 340, '', {
+            fontFamily: 'Arial Black', fontSize: 28, color: '#00ff00',
+            stroke: '#000000', strokeThickness: 6,
             align: 'left'
         }).setOrigin(0, 0.5);
 
@@ -93,7 +93,7 @@ export class Game extends Phaser.Scene {
 
         // Create the target circle (visual indicator)
         this.targetCircle = this.add.circle(this.ball.x, this.ball.y, this.targetRadius, 0x00ffff, 0.3);
-        this.targetCircle.setStrokeStyle(3, 0x00ffff);
+        this.targetCircle.setStrokeStyle(6, 0x00ffff);
 
         // Create graphics object for drawing the trail line
         this.trailGraphics = this.add.graphics();
@@ -131,7 +131,7 @@ export class Game extends Phaser.Scene {
         this.timeUntilShrink = 10; // seconds
 
         // Create a ground object at the bottom of the screen
-        const ground = this.add.rectangle(512, 768, 1024, 10, 0xFF0000);
+        const ground = this.add.rectangle(1024, 1536, 2048, 20, 0xFF0000);
         this.physics.add.existing(ground, true);
 
         // Add ground detection
@@ -146,8 +146,8 @@ export class Game extends Phaser.Scene {
         const ballData = gameDataManager.getCurrentBall();
         
         // Create ball with current ball properties
-        this.ball = this.physics.add.image(512, 384, 'ball');
-        this.ball.setScale(ballData.scale);
+        this.ball = this.physics.add.image(1024, 768, 'ball');
+        this.ball.setScale(ballData.scale * 2); // Double the scale for the new resolution
         this.ball.setBounce(ballData.bounce);
         this.ball.setCollideWorldBounds(true);
         this.ball.body.setCircle(this.ball.width / 2);
@@ -179,7 +179,7 @@ export class Game extends Phaser.Scene {
         this.powerUps.forEach((powerUp, index) => {
             if (powerUp.active) {
                 const distance = Phaser.Math.Distance.Between(this.ball.x, this.ball.y, powerUp.x, powerUp.y);
-                if (distance < 30) { // Collision threshold
+                if (distance < 60) { // Collision threshold (doubled for new resolution)
                     this.activatePowerUp(powerUp.getData('type'));
                     
                     // Visual feedback
@@ -254,9 +254,9 @@ export class Game extends Phaser.Scene {
         // Random electric sparks
         if (Math.random() < 0.05) {
             const spark = this.add.circle(
-                this.ball.x + Phaser.Math.Between(-20, 20),
-                this.ball.y + Phaser.Math.Between(-20, 20),
-                3, 0x00ffff
+                this.ball.x + Phaser.Math.Between(-40, 40),
+                this.ball.y + Phaser.Math.Between(-40, 40),
+                6, 0x00ffff
             );
             this.tweens.add({
                 targets: spark,
@@ -282,7 +282,7 @@ export class Game extends Phaser.Scene {
     handleSlipperyEffect() {
         // Add random velocity changes
         if (Math.random() < 0.02) {
-            const randomForce = Phaser.Math.Between(-100, 100);
+            const randomForce = Phaser.Math.Between(-200, 200);
             this.ball.setVelocityX(this.ball.body.velocity.x + randomForce);
         }
     }
@@ -291,13 +291,13 @@ export class Game extends Phaser.Scene {
         // Fire particles
         if (Math.random() < 0.1) {
             const flame = this.add.circle(
-                this.ball.x + Phaser.Math.Between(-15, 15),
-                this.ball.y + Phaser.Math.Between(-15, 15),
-                Phaser.Math.Between(2, 5), 0xff4500
+                this.ball.x + Phaser.Math.Between(-30, 30),
+                this.ball.y + Phaser.Math.Between(-30, 30),
+                Phaser.Math.Between(4, 10), 0xff4500
             );
             this.tweens.add({
                 targets: flame,
-                y: flame.y - 20,
+                y: flame.y - 40,
                 alpha: 0,
                 duration: 500,
                 onComplete: () => flame.destroy()
@@ -326,7 +326,7 @@ export class Game extends Phaser.Scene {
         // Draw the trail line with ball's color
         this.trailGraphics.clear();
         if (this.trailPoints.length > 1) {
-            this.trailGraphics.lineStyle(4, this.ballData.color, 0.8);
+            this.trailGraphics.lineStyle(8, this.ballData.color, 0.8);
             this.trailGraphics.beginPath();
             this.trailGraphics.moveTo(this.trailPoints[0].x, this.trailPoints[0].y);
             
@@ -355,9 +355,9 @@ export class Game extends Phaser.Scene {
                 tutorialText.setVisible(false);
             }
 
-            const randomXVelocity = Phaser.Math.Between(-400, 400);
+            const randomXVelocity = Phaser.Math.Between(-800, 800);
             this.ball.setVelocityX(randomXVelocity);
-            this.ball.setVelocityY(-this.ballData.jumpPower);
+            this.ball.setVelocityY(-this.ballData.jumpPower * 2);
 
             // Calculate score with power-up multiplier
             const baseScore = 1;
@@ -377,12 +377,12 @@ export class Game extends Phaser.Scene {
         const powerUpTypes = ['slowMotion', 'bigTarget', 'doublePoints', 'freezeShrink'];
         const randomType = Phaser.Utils.Array.GetRandom(powerUpTypes);
         
-        const x = Phaser.Math.Between(100, 924);
-        const y = Phaser.Math.Between(100, 300);
+        const x = Phaser.Math.Between(200, 1848);
+        const y = Phaser.Math.Between(200, 600);
         
         // Create power-up visual - stationary, no physics
         const powerUp = this.add.image(x, y, 'ball');
-        powerUp.setScale(0.4);
+        powerUp.setScale(0.8); // Double the scale for the new resolution
         powerUp.setData('type', randomType);
         
         // Add a pulsing effect to make it more visible

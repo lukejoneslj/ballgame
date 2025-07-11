@@ -9,15 +9,15 @@ import { UsernameInput } from './scenes/UsernameInput.js';
 
 const config = {
     type: Phaser.AUTO,
-    width: 1024,
-    height: 768,
+    width: 2048,
+    height: 1536,
     parent: 'game-container',
     backgroundColor: '#028af8',
     physics: {
         default: 'arcade',
         arcade: {
             debug: false,
-            gravity: { y: 500 }
+            gravity: { y: 1000 }
         }
     },
     scale: {
