@@ -1,8 +1,10 @@
 import { gameDataManager } from './DataManager.js';
+import { firebaseService } from '../services/FirebaseService.js';
 
 export class Start extends Phaser.Scene {
     constructor() {
         super('Start');
+        this.allTimeHighScore = null;
     }
 
     create() {
@@ -30,20 +32,23 @@ export class Start extends Phaser.Scene {
             align: 'center'
         }).setOrigin(0.5);
 
+        // All-time high score display
+        this.createAllTimeHighScoreDisplay();
+
         // Welcome message with username
-        this.add.text(512, 170, `Welcome back, ${gameDataManager.getCurrentUsername()}!`, {
+        this.add.text(512, 200, `Welcome back, ${gameDataManager.getCurrentUsername()}!`, {
             fontFamily: 'Arial Black', fontSize: 16, color: '#f1c40f',
             stroke: '#000000', strokeThickness: 3,
             align: 'center'
         }).setOrigin(0.5);
 
-        // Stats container background
-        const statsContainer = this.add.rectangle(512, 220, 400, 120, 0x2c3e50);
+        // Stats container background - moved down slightly
+        const statsContainer = this.add.rectangle(512, 250, 400, 120, 0x2c3e50);
         statsContainer.setStrokeStyle(3, 0x34495e);
         statsContainer.setAlpha(0.9);
 
-        // Player stats display - organized in columns
-        this.leftStats = this.add.text(412, 200, 
+        // Player stats display - organized in columns - moved down
+        this.leftStats = this.add.text(412, 230, 
             `Money: $${gameDataManager.getDollars()}\nBest Score: ${gameDataManager.getBestScore()}`, {
             fontFamily: 'Arial Black', fontSize: 16, color: '#ffffff',
             stroke: '#000000', strokeThickness: 3,
@@ -51,7 +56,7 @@ export class Start extends Phaser.Scene {
             lineSpacing: 8
         }).setOrigin(0.5);
 
-        this.rightStats = this.add.text(612, 200, 
+        this.rightStats = this.add.text(612, 230, 
             `Total Hits: ${gameDataManager.getTotalHits()}\nBalls Unlocked: ${gameDataManager.getUnlockedBalls().length}/14`, {
             fontFamily: 'Arial Black', fontSize: 16, color: '#ffffff',
             stroke: '#000000', strokeThickness: 3,
@@ -59,33 +64,33 @@ export class Start extends Phaser.Scene {
             lineSpacing: 8
         }).setOrigin(0.5);
 
-        // Current ball section
+        // Current ball section - moved down
         const currentBall = gameDataManager.getCurrentBall();
         
         // Ball preview - positioned to the left outside the box
-        const ballPreview = this.add.image(300, 360, 'ball');
+        const ballPreview = this.add.image(300, 390, 'ball');
         ballPreview.setScale(currentBall.scale * 2.2);
         ballPreview.setTint(currentBall.color);
         
         // Current ball container - centered for the text content
-        const ballContainer = this.add.rectangle(512, 360, 350, 120, 0x34495e);
+        const ballContainer = this.add.rectangle(512, 390, 350, 120, 0x34495e);
         ballContainer.setStrokeStyle(3, 0x2c3e50);
         ballContainer.setAlpha(0.9);
 
-        this.add.text(512, 310, 'CURRENT BALL', {
+        this.add.text(512, 340, 'CURRENT BALL', {
             fontFamily: 'Arial Black', fontSize: 18, color: '#ecf0f1',
             stroke: '#000000', strokeThickness: 4,
             align: 'center'
         }).setOrigin(0.5);
 
         // Ball name and info - centered in the container
-        this.add.text(512, 345, currentBall.name, {
+        this.add.text(512, 375, currentBall.name, {
             fontFamily: 'Arial Black', fontSize: 20, color: '#f1c40f',
             stroke: '#000000', strokeThickness: 4,
             align: 'center'
         }).setOrigin(0.5);
 
-        this.add.text(512, 375, 
+        this.add.text(512, 405, 
             `Scale: ${currentBall.scale} • Bounce: ${currentBall.bounce}\nJump: ${currentBall.jumpPower}`, {
             fontFamily: 'Arial Black', fontSize: 14, color: '#bdc3c7',
             stroke: '#000000', strokeThickness: 2,
@@ -106,6 +111,84 @@ export class Start extends Phaser.Scene {
 
         // Add subtle floating particles instead of balls
         this.createFloatingParticles();
+
+        // Load the all-time high score
+        this.loadAllTimeHighScore();
+
+        // Refresh all-time high score when returning to this scene
+        this.events.on('resume', () => {
+            this.loadAllTimeHighScore();
+        });
+    }
+
+    async createAllTimeHighScoreDisplay() {
+        // Create container for all-time high score
+        const highScoreContainer = this.add.rectangle(512, 170, 500, 50, 0x8e44ad);
+        highScoreContainer.setStrokeStyle(3, 0x9b59b6);
+        highScoreContainer.setAlpha(0.9);
+
+        // Add crown icon effect
+        const crown = this.add.text(400, 170, '👑', {
+            fontSize: 20,
+            align: 'center'
+        }).setOrigin(0.5);
+
+        // All-time high score text (placeholder)
+        this.allTimeHighScoreText = this.add.text(512, 170, 'Loading global record...', {
+            fontFamily: 'Arial Black', fontSize: 16, color: '#ffffff',
+            stroke: '#000000', strokeThickness: 3,
+            align: 'center'
+        }).setOrigin(0.5);
+
+        // Add sparkle effect
+        const sparkle = this.add.text(624, 170, '✨', {
+            fontSize: 20,
+            align: 'center'
+        }).setOrigin(0.5);
+
+        // Animate sparkle
+        this.tweens.add({
+            targets: sparkle,
+            alpha: 0.3,
+            duration: 1000,
+            ease: 'Sine.easeInOut',
+            yoyo: true,
+            repeat: -1
+        });
+    }
+
+    async loadAllTimeHighScore() {
+        try {
+            // Initialize Firebase service if not already done
+            if (!firebaseService.isOnline()) {
+                await firebaseService.init();
+            }
+
+            // Get high scores
+            const highScores = await firebaseService.getHighScores();
+            
+            if (highScores && highScores.length > 0) {
+                this.allTimeHighScore = highScores[0];
+                this.allTimeHighScoreText.setText(`GLOBAL RECORD: ${this.allTimeHighScore.score} by ${this.allTimeHighScore.username}`);
+                
+                // Add a subtle success animation
+                this.tweens.add({
+                    targets: this.allTimeHighScoreText,
+                    scaleX: 1.1,
+                    scaleY: 1.1,
+                    duration: 300,
+                    yoyo: true,
+                    ease: 'Back.easeOut'
+                });
+            } else {
+                this.allTimeHighScoreText.setText('No global records yet - be the first!');
+                this.allTimeHighScoreText.setColor('#e67e22');
+            }
+        } catch (error) {
+            console.warn('Failed to load all-time high score:', error);
+            this.allTimeHighScoreText.setText('Global record unavailable');
+            this.allTimeHighScoreText.setColor('#7f8c8d');
+        }
     }
 
     createStyledButtons() {
